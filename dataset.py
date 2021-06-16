@@ -73,7 +73,6 @@ class FracNetTrainDataset(Dataset):
         return sym_neg_centroids + spine_neg_centroids
 
     def _get_roi_centroids(self, label_arr):
-        #if self.train:
             # generate positive samples' centroids
         pos_centroids = self._get_pos_centroids(label_arr)
 
@@ -98,13 +97,6 @@ class FracNetTrainDataset(Dataset):
                     range(0, len(neg_centroids)), size=num_neg, replace=False)]
 
         roi_centroids = pos_centroids + neg_centroids
-        '''else:
-            roi_centroids = [list(range(0, x, y // 2))[1:-1] + [x - y // 2]
-                for x, y in zip(label_arr.shape, self.crop_size)]
-            roi_centroids = list(product(*roi_centroids))
-
-        roi_centroids = [tuple([int(x) for x in centroid])
-            for centroid in roi_centroids]'''
 
         return roi_centroids
 
@@ -137,18 +129,6 @@ class FracNetTrainDataset(Dataset):
 
         return image,label
          
-    def random_scale(self,image,label):
-        if random.uniform(0,1)<0.3:
-            scale = random.uniform(0.85,1.25)
-            scale = np.round(scale,2)
-            image,label = torch.from_numpy(image),torch.from_numpy(label)
-            image = image.unsqueeze(0).unsqueeze(0)
-            label = label.unsqueeze(0).unsqueeze(0).float()
-            image = F.interpolate(image,scale_factor = scale,mode = 'trilinear',align_corners = False,recompute_scale_factor = True)
-            label = F.interpolate(label,scale_factor = scale,mode = 'nearest',recompute_scale_factor = True)
-            image = image.numpy().squeeze(0).squeeze(0)
-            label = label.numpy().squeeze(0).squeeze(0).astype(np.uint8)
-        return image,label
     def __getitem__(self, idx):
         # read image and label
         public_id = self.public_id_list[idx]
@@ -158,11 +138,6 @@ class FracNetTrainDataset(Dataset):
         label = nib.load(label_path)
         image_arr = image.get_fdata().astype(np.float)
         label_arr = label.get_fdata().astype(np.uint8)
-        #if self.train:
-            #image_arr,label_arr = self.random_scale(image_arr,label_arr)
-        #if self.transforms is not None:
-            #image_arr,label_arr = self._apply_transforms(image_arr,label_arr)
-
         # calculate rois' centroids
         roi_centroids = self._get_roi_centroids(label_arr)
 
@@ -177,8 +152,6 @@ class FracNetTrainDataset(Dataset):
             tmp2 = label_rois
             image_rois,label_rois =[],[]
             for i in range(len(tmp1)):
-                #image_rois = [self._apply_transforms(image_roi)
-                #for image_roi in image_rois]
                 image_roi,label_roi = self._apply_transforms(tmp1[i],tmp2[i])
                 image_rois.append(image_roi)
                 label_rois.append(label_roi)
