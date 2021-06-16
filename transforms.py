@@ -43,9 +43,9 @@ class RandomFlip:
         pass
     def __call__(self,image,label):
         if random.randint(0,1):
-            image,label = np.flip(image,axis = 0),np.flip(label,axis = 0)
+            image,label = np.flip(image,axis = 0),np.flip(label,axis = 0)       #水平翻转
         if random.randint(0,1):
-            image,label = np.flip(image,axis = 1),np.flip(label,axis = 1)
+            image,label = np.flip(image,axis = 1),np.flip(label,axis = 1)     #垂直翻转
         return image,label
         
         
@@ -57,7 +57,7 @@ class addNoise:
        
     def __call__(self,image,label):
         if random.uniform(0, 1)<self.prob:
-            sigma = np.std(image) * self.std_factor
+            sigma = np.std(image) * self.std_factor              #标准差为patch标准差的0.1倍
             noise = np.random.normal(self.mean, sigma, image.shape)
             return np.add(image, noise),label
         else:return image,label
@@ -85,7 +85,7 @@ class RandomScale:
             size = image.shape[0]
             image = scipy.ndimage.zoom(image,scale)
             label = scipy.ndimage.zoom(label,scale)
-            if scale > 1:
+            if scale > 1:          #scale不为1时为保证图像大小不变，scale<1时使用背景的值（-200）填充，scale>1时进行center crop
                 center = image.shape[0] // 2
                 image = image[center-size//2:center+size//2,center-size//2:center+size//2,center-size//2:center+size//2]
                 label = label[center-size//2:center+size//2,center-size//2:center+size//2,center-size//2:center+size//2]
@@ -101,7 +101,7 @@ class RandomRotate:
     def __init__(self,prob = 0.3):
         self.prob = prob
     def __call__(self,image,label):
-        if random.uniform(0,1) < self.prob:
+        if random.uniform(0,1) < self.prob:     #随机旋转90/180/270度
             k = random.randint(1,3)
             image = np.rot90(image,k)
             label = np.rot90(label,k)

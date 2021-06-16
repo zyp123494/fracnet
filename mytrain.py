@@ -62,10 +62,10 @@ def train(model, train_loader, optimizer,criterion):
 
 if __name__ == '__main__':
     
-    train_image_dir = '../wz/train_image'
-    train_label_dir = '../wz/train_label'
-    val_image_dir = '../wz/val_image'
-    val_label_dir = '../wz/val_label'
+    train_image_dir = 'train_image'
+    train_label_dir = 'train_label'
+    val_image_dir = 'val_image'
+    val_label_dir = 'val_label'
 
     batch_size = 6
     num_workers = 6
@@ -80,7 +80,7 @@ if __name__ == '__main__':
     #criterion = MixLoss(SoftDiceLoss(), 1, FocalLoss(), 0.5)
 
     train_transforms = [
-        tsfm.RandomFlip(),
+        tsfm.RandomFlip(),        #随机水平垂直翻转
         #tsfm.RandomRotate(),
         #tsfm.addNoise(),
         tsfm.Window(-200, 1000),

@@ -117,9 +117,9 @@ def _make_submission_files(pred, image_id, affine):
 
 
 if __name__ == '__main__':
-    image_dir =  '../wz/val_image/'
+    image_dir =  'val_image/'
     pred_dir = 'pred_result/'
-    model_path = '50.pth'
+    model_path = 'best_model.pth'
 
     prob_thresh = 0.1
     bone_thresh = 300
@@ -127,7 +127,7 @@ if __name__ == '__main__':
     crop_size = 64
     step = crop_size // 2
 
-    batch_size = 32
+    batch_size = 24
     num_workers = 6
     postprocess = True 
 

@@ -7,7 +7,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-class ConvBlock(nn.Module):
+class ConvBlock(nn.Module):           #卷积块
     def __init__(self, in_channels, out_channels,kernel_size = 3,stride = 1,padding = 1):
         super(ConvBlock, self).__init__()
         self.conv = nn.Conv3d(in_channels = in_channels, out_channels = out_channels, kernel_size = kernel_size,
@@ -20,7 +20,7 @@ class ConvBlock(nn.Module):
         out = self.relu(x)
         return out
         
-class ConvTranspose(nn.Module):
+class ConvTranspose(nn.Module):     #反卷积块
     def __init__(self, in_channels, out_channels,kernel_size = 2,stride = 2,padding = 0):
         super(ConvTranspose, self).__init__()
         self.conv = nn.ConvTranspose3d(in_channels = in_channels, out_channels = out_channels, kernel_size = kernel_size,
@@ -64,7 +64,7 @@ class UNet(nn.Module):
         self.final_conv = nn.Conv3d(in_channels = hidden_channels*2, out_channels = out_channels, kernel_size = 1)
         self.pool = nn.MaxPool3d(2,2)
         
-        for m in self.modules():
+        for m in self.modules():       #模型初始化
             if isinstance(m, nn.Conv3d):
                 nn.init.kaiming_normal_(m.weight, mode='fan_out', nonlinearity='leaky_relu')
             elif isinstance(m, nn.BatchNorm3d):
@@ -80,6 +80,7 @@ class UNet(nn.Module):
         x = self.pool(x)
         x = self.encoder4(x)
         
+        #也可使用F.interpolate进行插值
         #x = F.interpolate(x,scale_factor = (2,2,2),mode = 'trilinear',align_corners = True)
         x = self.deconv1(x)
         x = torch.cat((x,e3),dim = 1)
