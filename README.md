@@ -9,3 +9,5 @@ scikit-image==0.17.2
 torch==1.5.1
 
 tqdm==4.55.1
+
+运行时需修改mytrain.py和predict.py中的数据集路径
